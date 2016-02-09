@@ -6,12 +6,24 @@
 #include <set>
 #include <fstream>
 
-#define WIDTH 1000
-#define HEIGHT 1000
+#define WIDTH 100
+#define HEIGHT 100
 
 #define SQUARE 1
 #define LINE 2
 #define ERASE 3
+
+#define DEBUG 1 // set debug mode
+
+#if DEBUG
+#define log(...) {\
+    char str[100];\
+    sprintf(str, __VA_ARGS__);\
+    std::cout << "[" << __FUNCTION__ << "][Line " << __LINE__ << "] " << str << std::endl;\
+    }
+#else
+#define log(...)
+#endif
 
 using namespace std;
 
@@ -19,7 +31,6 @@ struct Operation {
 	int type; // 1 = PAINT_SQUARE, 2 = PAINT_LINE, 3 = ERASE_CELL
 	int values[4];
 	Operation(Operation const& out) {
-		//cout << "Cloning an operation with type " << out.type << endl;
 		type = out.type;
 		values[0] = out.values[0];
 		values[1] = out.values[1];
@@ -52,7 +63,7 @@ struct Operation {
 		} else if (type == ERASE) {
 			fout << "ERASE_CELL " << values[0] << " " << values[1] << std::endl;
 		} else {
-			std::cerr << "Operation with false type: " << type << std::endl;
+			log("Operation with false type: %d", type);
 		}
 	}
 };
@@ -96,6 +107,8 @@ private:
 	vector<Operation> ops;
 	vector<Operation> erase;
 public:
+    bool status[HEIGHT][WIDTH];
+    
     Output(Output const& out) {
         input = out.input;
 	    for (int i = 0; i < input.ROWS; ++i)
@@ -103,39 +116,36 @@ public:
 	             status[i][j] = out.status[i][j];
 	    for (auto& op : out.ops) {
 	    	if (op.type == 0) {
-	    		cout << "Operation with false type " << op.type << endl;
+	    		log("Operation with false type %d",op.type);
 	    	}
 	        ops.push_back(op);
 	    }
 	    for (auto& er : out.erase)
 	        erase.push_back(er);
     }
-	
-    bool status[HEIGHT][WIDTH];
     
-//	Output(Input const& in, vector<Operation>& o) : input(in) : ops(o.clone()) {}
-
 	Output(Input const& in) : input(in) {
 	    for (int i = 0; i < input.ROWS; ++i) {
 	        fill_n(status[i], input.COLUMNS, false);   
 	    }
 	}
-
-	int score();
-
-	void add_operation(Operation const& op);
-
-    Output clone() {
+	
+	Output clone() {
         return Output(*this);
     }
 
+	int score();
+	void add_operation(Operation const& op);
+	bool check();
     template <typename Stream>
 	void print_output(Stream& sout);
+	template <typename Stream>
+	void print_output_squared(Stream& sout);
+
 };
 
 void Output::add_operation(Operation const& op) {
 	if (op.type == SQUARE) {
-		cout << "addOperation: Add PAINT_SQUARE operation" << endl;
 		// square
 		int fromrow = op.values[0] - op.values[2];
 		int fromcol = op.values[1] - op.values[2];
@@ -166,15 +176,32 @@ void Output::add_operation(Operation const& op) {
 				status[r][c1] = true;
 			}
 		} else {
-			std::cerr << "Invalid line" << std::endl;
+			log("ERROR: Invalid line");
 		}
 		ops.push_back(op);
 	} else {
-		std::cerr << "Invalid operation" << std::endl;
+		log("ERROR: Invalid operation");
 	}
 }
+
 int Output::score() {
 	return ops.size() + erase.size();
+}
+
+
+bool Output::check() {
+	int count = 0;
+	for(int r = 0; r < HEIGHT; r++) {
+		for (int c = 0; c < WIDTH; c++) {
+			if (input.is_painted[r][c] != status[r][c]) {
+				count++;
+			}
+		}
+	}
+	if (erase.size() != count) {
+		log("check: Found %d deviations and %zu erase operations", count, erase.size());
+	}
+	return erase.size() == count;
 }
 
 template <typename Stream>
@@ -186,5 +213,21 @@ void Output::print_output(Stream &sout) {
 		op.print(sout);
 }
 
+
+template <typename Stream>
+void Output::print_output_squared(Stream &sout) {
+	for (int y = 0; y < input.ROWS; ++y) {
+		for (int x = 0; x < input.COLUMNS; ++x) {
+			if (status[y][x]) {
+				sout << "X";
+			} else if (input.is_painted[y][x]) {
+				sout << "#";
+			} else {
+				sout << ".";
+			}
+		}
+		sout << endl;
+	}
+}
 
 #endif

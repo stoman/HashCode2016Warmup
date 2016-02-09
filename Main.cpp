@@ -6,8 +6,8 @@
 
 using namespace std;
 
-// ifstream fin("cases/handcrafted/margin_with_square.in");
-ifstream fin("cases/official/learn_and_teach.in");
+//ifstream fin("cases/handcrafted/margin_with_square.in");
+ifstream fin("cases/official/logo.in");
 ofstream fout("example.out");
 
 vector<Output> distributeSquares(Input const& input);
@@ -15,66 +15,77 @@ vector<Output> fillRemainingSquares(Input const& input, Output const& output);
 
 int main()
 {
-	cout << "main: Reading input" << endl;
+	log("main: Reading input");
 	
 	if (fin.fail()) {
-		cout << "File con not be read" << endl;
+		log("File can not be read");
 		return 1;
 	}
 	
 	Input input;
 	input.read_input(fin);
 
-	cout << "main: Distributing squares" << endl;
+	log("Distributing squares");
 	vector<Output> outputs_dist = distributeSquares(input);
-	cout << "main: " << outputs_dist.size() << " solutions found" << endl;
+	for (auto out_dist : outputs_dist) {
+		out_dist.print_output_squared(cout);
+	}
+	
+	Output output(input);
+	outputs_dist.push_back(output);
+	
+	log("%zu solutions found after squaring (1 of it the identity)", outputs_dist.size());
 
 	//  	output.add_operation(op_paint_line(0, 5, 3, 5));
 
-	cout << "main: Filling with fillRemainingSquares" << endl;
+	log("Filling with fillRemainingSquares");
 	
 	vector<Output> outputs_fillrem;
 	int i = 1;
 	for (auto out_dist : outputs_dist) {
-		cout << "main: fillRemaining call #" << i << endl;
+		log("fillRemaining call # %d", i++);
 		for (auto out_fillrem : fillRemainingSquares(input, out_dist)) {
 			outputs_fillrem.push_back(out_fillrem);
 		}
 	}
-    Output output(input);
-	for (auto out_fillrem : fillRemainingSquares(input, output)) {
-		outputs_fillrem.push_back(out_fillrem);
-	}
 
-    cout << "main: " << outputs_fillrem.size() << " solutions found" << endl;
+    log("%zu solutions found", outputs_fillrem.size());
     
   	Output* best = NULL;
+  	bool valid = true;
   	for (auto& out : outputs_fillrem) {
   		// cout << "found solution with score " << out.ops.size() << endl;
+  		if (!out.check()) {
+  			log("ERROR: Found invalid solution");
+  			valid = false;
+  		}
   		if (best == NULL || out.score() < best->score()) {
   			best = &out;
   		}
   	}
+  	if (valid) {
+  		log("All solutions valid.");
+  	}
 
   	if (best != NULL) {
-  		cout << "main: score of best solution: " << best->score() << endl;
+  		log("score of best solution: %d", best->score());
   		best->print_output(fout);
-		best->print_output(cout);
+		//best->print_output(cout);
   	} else {
-  		cout << "main: no best solution" << endl;
+  		log("no solution found");
   	}
 
 	return 0;
 }
 
-#define filledFactor 1
+#define filledFactor 0.88
 
 double getBest(int x, int y, int** presumCol, int** presumRow, Input const& input) {
     // cout << "entering getbest at ";
     // cout << x << " " << y << endl;
 	int filled = 0;
 	int best = -1;
-	if (input.is_painted[x][y]) {
+	if (input.is_painted[y][x]) {
 		filled = 1;
 	}
 	int squares = 1;
@@ -92,7 +103,7 @@ double getBest(int x, int y, int** presumCol, int** presumRow, Input const& inpu
 // 		cout << filled << " after 3" << endl;
 		filled += presumRow[y+size-1][x+size-2]-presumRow[y+size-1][x];
 // 		cout << filled << " after 4" << endl;
-		if (filled > filledFactor*squares) {
+		if (filled >= filledFactor*squares) {
 			best = size;
 		}
 // 		cout << squares << " squares" << endl;
@@ -145,7 +156,7 @@ vector<Output> distributeSquares(Input const& input) {
 			}
 			int best = getBest(x,y,presumCol,presumRow,input);
 			if (best > -1) {
-			    cout << "distributeSquares: adding square of size " << best << " at " << y+best << " " << x+best << endl;
+			    log("adding square of size %d at %d %d", best, y+best, x+best);
 				// add square of size best here
 				sol.add_operation(op_paint_square(y+best,x+best,best) );
 			}
@@ -173,8 +184,8 @@ vector<Output> fillRemainingSquares(Input const& input, Output const& output) {
 	int sizeX = 1 + (input.ROWS - 1) / partsX;
 	int sizeY = 1 + (input.COLUMNS - 1) / partsY;
 	
-	cout << "fillRemainingSquares: partsX = " << partsX << endl;
-	cout << "fillRemainingSquares: partsY = " << partsY << endl;
+	log("partsX = %d", partsX);
+	log("partsY = %d", partsY);
 
 	//arrays to save where lines may begin or end if they are as long as possible
 	int lineStartX[input.ROWS][input.COLUMNS], lineEndX[input.ROWS][input.COLUMNS], lineStartY[input.ROWS][input.COLUMNS], lineEndY[input.ROWS][input.COLUMNS];
@@ -223,6 +234,7 @@ vector<Output> fillRemainingSquares(Input const& input, Output const& output) {
 		}
 	}
 
+	/*
 	cout << "fillRemainingSquares: input.is_painted/output.status" << endl;
 	for(int x = 0; x < input.ROWS; x++) {
 		for(int y = 0; y < input.COLUMNS; y++) {
@@ -246,8 +258,8 @@ vector<Output> fillRemainingSquares(Input const& input, Output const& output) {
 		}
 		cout << endl;
 	}
-	
 	cout << "fillRemainingSquares: finished computing helper arrays" << endl;
+	*/
 	
 	//iterate over modes for quadrants of the algorithm
 	vector<Output> ret;
@@ -259,7 +271,7 @@ vector<Output> fillRemainingSquares(Input const& input, Output const& output) {
 			tmpModeQuadrant /= 2;
 		}
 		
-		cout << "fillRemainingSquares: modeQuadrant = " << modeQuadrant << endl;
+		log("modeQuadrant = %d", modeQuadrant);
 		
 		//prepare output objects
 		Output modeQuadrantOutput(output);
@@ -287,7 +299,7 @@ vector<Output> fillRemainingSquares(Input const& input, Output const& output) {
 						tmpModeSquare /= 2;
 					}
 					
-					cout << "fillRemainingSquares: modeSquare = " << modeSquare << endl;
+					//cout << "fillRemainingSquares: modeSquare = " << modeSquare << endl;
 					
 					//prepare output objects
 					Output modeSquareOutput(modeQuadrantOutput);
@@ -303,17 +315,17 @@ vector<Output> fillRemainingSquares(Input const& input, Output const& output) {
 								int lengthX = lineEndX[i][j] - lineStartX[i][j] + 1;
 								int lengthY = lineEndY[i][j] - lineStartY[i][j] + 1;
 								if(lengthX > lengthY || (lengthX == lengthY && modesSquare[2] == 0)) {
-									cout << "fillRemainingSquares: line X " << lineStartX[i][j] << " " << j << " " << lineEndX[i][j] << " " << j << endl;
+									//cout << "fillRemainingSquares: line X " << lineStartX[i][j] << " " << j << " " << lineEndX[i][j] << " " << j << endl;
 									modeSquareOutput.add_operation(op_paint_line(lineStartX[i][j], j, lineEndX[i][j], j));
 								}
 								else {
-									cout << "fillRemainingSquares: line Y " << i << " " << lineStartY[i][j] << " " << i << " " << lineEndY[i][j] << endl;
+									//cout << "fillRemainingSquares: line Y " << i << " " << lineStartY[i][j] << " " << i << " " << lineEndY[i][j] << endl;
 									modeSquareOutput.add_operation(op_paint_line(i, lineStartY[i][j], i, lineEndY[i][j]));
 								}
 							}
 						}
 					}
-					cout << "fillRemainingSquares: modeSquareOutput.score() = " << modeSquareOutput.score() << endl;
+					//cout << "fillRemainingSquares: modeSquareOutput.score() = " << modeSquareOutput.score() << endl;
 					//keep just the best output over all square modes
 					if(bestModeSquareOutputEmpty || bestModeSquareOutput.score() > modeSquareOutput.score()) {
 						bestModeSquareOutput = modeSquareOutput;
