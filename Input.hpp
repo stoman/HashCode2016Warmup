@@ -6,8 +6,8 @@
 #include <set>
 #include <fstream>
 
-#define WIDTH 100
-#define HEIGHT 100
+#define WIDTH 1000
+#define HEIGHT 1000
 
 #define SQUARE 1
 #define LINE 2
@@ -19,7 +19,7 @@ struct Operation {
 	int type; // 1 = PAINT_SQUARE, 2 = PAINT_LINE, 3 = ERASE_CELL
 	int values[4];
 	Operation(Operation const& out) {
-		cout << "Cloning an operation with type " << out.type << endl;
+		//cout << "Cloning an operation with type " << out.type << endl;
 		type = out.type;
 		values[0] = out.values[0];
 		values[1] = out.values[1];
@@ -135,7 +135,7 @@ public:
 
 void Output::add_operation(Operation const& op) {
 	if (op.type == SQUARE) {
-		// cout << "addOperation: Add PAINT_SQUARE operation" << endl;
+		cout << "addOperation: Add PAINT_SQUARE operation" << endl;
 		// square
 		int fromrow = op.values[0] - op.values[2];
 		int fromcol = op.values[1] - op.values[2];
@@ -149,6 +149,7 @@ void Output::add_operation(Operation const& op) {
 				}
 			}
 		}
+		ops.push_back(op);
 	} else if (op.type == LINE) {
 		// cout << "addOperation: Add PAINT_LINE operation" << endl;
 		// line

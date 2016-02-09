@@ -54,12 +54,14 @@ int main()
     clear(0, 0, WIDTH, HEIGHT, test);
     
     // chessboard(0, 0, WIDTH, HEIGHT, test);
-    rect(0, 0, WIDTH, 1, test);
-    rect(0, HEIGHT - 1, WIDTH, 1, test);
-    rect(0, 0, 1, HEIGHT, test);
-    rect(WIDTH - 1, 0, 1, HEIGHT, test);
+    // rect(0, 0, WIDTH, 1, test);
+    // rect(0, HEIGHT - 1, WIDTH, 1, test);
+    // rect(0, 0, 1, HEIGHT, test);
+    // rect(WIDTH - 1, 0, 1, HEIGHT, test);
     
-    rect (2,2,8,8,test);
+    rect(3,4,12,3,test);
+    
+    // rect (2,2,8,8,test);
     
     // for (int i = 0; i < WIDTH; i++) {
     //     if (i % 2 == 0) {
