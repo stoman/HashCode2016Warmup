@@ -12,7 +12,7 @@ public class Main {
             BufferedWriter outDst = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(i.dst)));
             outDst.write(s.toString());
             outDst.close();
-            BufferedWriter outVis = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(i.vis));
+            BufferedWriter outVis = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(i.vis)));
             outVis.write(s.visualize());
             outVis.close();
         }
