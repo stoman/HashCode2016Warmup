@@ -170,7 +170,6 @@ public class Input {
 		
 		//fulfill each order step by step
 		for(int o: sort) {
-			System.out.println(o);
 			List<Delivery> deliveriesOrder = new LinkedList<Delivery>();
 			
 			//order warehouses by dist
@@ -224,6 +223,14 @@ public class Input {
 			r.set(o, deliveriesOrder);
 		}
 		
+		System.out.println("====================\n");
+		for(int i = 0; i < orders.length; i++) {
+			System.out.println(orders[i].toString());
+			for(Delivery d: r.get(i)) {
+				System.out.println(d.toString());
+			}
+			System.out.println();
+		}
 		return r;
 	}
 }
