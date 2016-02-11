@@ -137,13 +137,43 @@ public class Input {
 	}
 	
 	public List<List<Delivery>> planDeliveries() {
-		List<Delivery> r = new LinkedList<Delivery>();
+		List<List<Delivery>> r = new LinkedList<List<Delivery>>();
+		
+		//determine order to fulfill orders
 		ArrayList<Integer> sort = new ArrayList<Integer>();
 		for (int i = 0; i < orders.length; i++) {
 			sort.add(i);
 		}
 		Collections.shuffle(sort);
+		
+		//copy stock array
 		int[][] stock = new int[w_stock.length][w_stock[0].length];
+		for (int i = 0; i < stock.length; i++) {
+			for (int j = 0; j < stock[i].length; j++) {
+				stock[i][j] = w_stock[i][j];
+			}
+		}
+		
+		//fulfill each order step by step
+		for(int o: sort) {
+			
+			//order warehouses by dist
+			ArrayList<Integer> warehousesByDist = new ArrayList<Integer>();
+			for(int i = 0; i < W; i++) {
+				warehousesByDist.add(i);
+			}
+			warehousesByDist.sort(new Comparator<Integer>() {
+				public int compare(Integer arg0, Integer arg1) {
+					int dist0 = 0;
+					dist0 += (orders[o].x - w_x[arg0])*(orders[o].x - w_x[arg0]);
+					dist0 += (orders[o].y - w_y[arg0])*(orders[o].y - w_y[arg0]);
+					int dist1 = 0;
+					dist1 += (orders[o].x - w_x[arg1])*(orders[o].x - w_x[arg1]);
+					dist1 += (orders[o].y - w_y[arg1])*(orders[o].y - w_y[arg1]);
+					return dist0 - dist1;
+				}
+			});
+		}
 		
 		return r;
 	}
