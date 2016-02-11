@@ -15,7 +15,7 @@ public class Input {
 	
 	public Input(Path p) throws IOException {
 	    src=p;
-	    dst=getPath(src.toString().replace(".in", ".out"));
+	    dst=getPath(src.toString().replace(".in", ".ans"));
 	    vis=getPath(src.toString().replace(".in", ".vis"));
 		Scanner sc = new Scanner(src);
 		//TODO: read input

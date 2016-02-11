@@ -25,7 +25,7 @@ public class State {
 	
 	public static State solve(Input i) {
 		//TODO: solve me
-		return null;
+		return new State(i);
 	}
 	
 	public List<Input> readAll() {
