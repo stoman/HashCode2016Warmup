@@ -21,9 +21,9 @@ public class Input {
 		//TODO: read input
 	}
 	
-	static LinkedList<Input> readAll() {
+	static LinkedList<Input> readAll(String folder) {
 		LinkedList<Path> files = new LinkedList<>();
-		Path path = FileSystems.getDefault().getPath("data");
+		Path path = getPath(folder);
 		try {
 			listFiles(path, files);
 		} catch (IOException e) {
@@ -42,7 +42,7 @@ public class Input {
 		return inputs;
 	}
 
-	Path getPath(String file) {
+	static Path getPath(String file) {
 		return FileSystems.getDefault().getPath(file);
 	}
 	
