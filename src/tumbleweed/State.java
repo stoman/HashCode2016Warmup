@@ -212,5 +212,8 @@ public class State {
 			return o.id != id;
 		}
 
+		public String toString() {
+			return "drone " + id + " at " + posX + "|" + posY + ", time: " + time;
+		}
 	}
 }
