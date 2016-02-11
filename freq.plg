@@ -3,4 +3,7 @@ set term pngcairo size 600,600 enhanced font 'Verdana,10'
 set output outputname
 
 set palette model RGB defined ( 0 'green', 1 'black' )
+unset colorbox
+
+set offsets 5, 5, 5, 5
 plot datafile u 2:3:1 with labels offset 3 notitle, datafile u 2:3:4 with points palette notitle
