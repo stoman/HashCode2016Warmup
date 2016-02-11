@@ -7,7 +7,7 @@
 using namespace std;
 
 //ifstream fin("cases/handcrafted/margin_with_square.in");
-ifstream fin("cases/official/logo.in");
+ifstream fin("cases/official/learn_and_teach.in");
 ofstream fout("example.out");
 
 vector<Output> distributeSquares(Input const& input);

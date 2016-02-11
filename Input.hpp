@@ -6,8 +6,8 @@
 #include <set>
 #include <fstream>
 
-#define WIDTH 100
-#define HEIGHT 100
+#define WIDTH 160
+#define HEIGHT 800
 
 #define SQUARE 1
 #define LINE 2
@@ -152,11 +152,11 @@ void Output::add_operation(Operation const& op) {
 		int size = op.values[2] * 2 + 1;
 		for (int r = fromrow; r < fromrow+size; r++) {
 			for (int c = fromcol; c < fromcol + size; c++) {
-				status[r][c] = true;	
-				if (!input.is_painted[r][c]) {
+				if (!input.is_painted[r][c] && !status[r][c]) {
 					// cout << "addOperation: Adding ERASE operation" << endl;
 				    erase.push_back(op_erase_cell(r, c));
 				}
+				status[r][c] = true;	
 			}
 		}
 		ops.push_back(op);
