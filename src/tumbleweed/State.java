@@ -18,8 +18,30 @@ public class State {
 	}
 	
 	public String toString() {
-		//TODO: print me as given in the problem statement 
-		return "fill me";
+		int Q = 0;
+		
+		int[] prod_nums = new int[in.P];
+		StringBuilder result = new StringBuilder();
+		for (int d = 0; d < droneSchedules.size(); ++d) {
+			for (int i = 0; i < droneSchedules.get(d).size(); ++i) {
+				for (int p = 0; p < in.P; ++p)
+					prod_nums[p] = 0;
+				for (int j = 0; j < droneSchedules.get(d).get(i).products.length; ++j) {
+					prod_nums[droneSchedules.get(d).get(i).products[j]]++;
+				for (int p = 0; p < in.P; ++p)
+					if (prod_nums[p] > 0) {
+						result.append(d + " L " + droneSchedules.get(d).get(i).warehouse + " " + p + " " + prod_nums[p] + "\n");
+						Q++;
+					}
+				for (int p = 0; p < in.P; ++p)
+					if (prod_nums[p] > 0){
+						result.append(d + " D " + droneSchedules.get(d).get(i).orderid + " " + p + " " + prod_nums[p] + "\n");
+						Q++;
+					}
+				}
+			}
+		}
+		return Q + "\n" + result.toString();
 	}
 	
 	public String visualize() {
