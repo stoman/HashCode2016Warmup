@@ -48,49 +48,115 @@ public class State {
 		return sb.toString();
 	}
 	
-	static List<List<Delivery>> currentSchedule = null;
+	static ArrayList<List<Delivery>> currentSchedule = null;
 	
-	static int getTime(List<Delivery> d, List<Drone> drohnes) {
-		return 0;
+	static int distTime(int x1, int y1, int x2, int y2) {
+		int dist0 = (x2 - x1)*(x2 - x1);
+		dist0 += (y2-y1)*(y2-y1);
+		return (int)Math.ceil(Math.sqrt(dist0));
+	}
+	
+	static int getTime(Input in, Delivery d, Drone drone) {
+		int time = 0;
+		time += distTime(drone.posX,drone.posY, in.w_x[d.warehouse],in.w_y[d.warehouse]);
+		time += distTime(in.w_x[d.warehouse],in.w_y[d.warehouse],in.orders[d.orderid].x,in.orders[d.orderid].y);
+		time += d.numberOfProducts;
+		return time;
+	}
+	
+	static int getTime(Input in, List<Delivery> deliveries, List<Drone> drones) {
+		TreeSet<Drone> owndrones = new TreeSet<Drone>();
+		for (Drone d : drones) {
+			owndrones.add(new Drone(d));
+		}
+		int done = 0;
+		int endTime = Integer.MIN_VALUE;
+		while (done != deliveries.size()) {
+			Drone d = owndrones.pollFirst();
+			int best = Integer.MAX_VALUE;
+			Delivery bestDel = null;
+			for (Delivery del : deliveries) {
+				if (del.done){
+					continue;
+				}
+				int time = getTime(del,d);
+				if (time < best) {
+					best = time;
+					bestDel = del;
+				}
+			}
+			currentSchedule.get(d.id).add(bestDel);
+			d.time += best;
+			endTime = Math.max(endTime, d.time);
+			d.posX = in.orders[bestDel.orderid].x;
+			d.posY = in.orders[bestDel.orderid].x;
+			owndrones.add(d);
+			bestDel.done = true;
+			done++;
+		}
+		
+		for (Delivery d : deliveries) {
+			d.done = false;
+		}
+		return endTime;
 	}
 	
 	public static State solve(Input in) {
 		State solved = new State(in);
 		List<List<Delivery>> deliveries = in.planDeliveries();
-		TreeSet<Pair> droneFinished = new TreeSet<>();
+		TreeSet<Drone> droneFinished = new TreeSet<>();
 		for (int i=0; i < in.D; i++ ) {
-			droneFinished.add(new Pair(new Drone(i,0,0,0),0));
+			//fixme 0tes warehouse
+			droneFinished.add(new Drone(i,0,0,0));
 		}
 		
 		while (droneFinished.first().time < in.deadline) {
 			List<Drone> freeDrones = new LinkedList<Drone>();
 			int best = Integer.MAX_VALUE;
 			List<List<Delivery>> bestSchedule = null;
-			for (Pair p : droneFinished) {
+			for (Drone d : droneFinished) {
 				// try for every subset of the drohnes
-				freeDrones.add(p.drohne);
+				freeDrones.add(d);
 				for (List<Delivery> order : deliveries) {
-					int timeForOrder = getTime(order, freeDrones);
+					int timeForOrder = getTime(in,order, freeDrones);
 					if (timeForOrder < best) {
 						bestSchedule = currentSchedule;
 						best = timeForOrder;
 					}
 	 			}
 			}
-			int i = 0;
-			for (List<Delivery> droneSchedule : bestSchedule) {
-				solved.droneSchedules.get(i).addAll(droneSchedule);
-				i++;
+			TreeSet<Drone> oldDroneFinished = droneFinished;
+			droneFinished = new TreeSet<Drone>();
+			while (!oldDroneFinished.isEmpty()) {
+				Drone d = oldDroneFinished.pollFirst();
+				List<Delivery> droneSchedule = bestSchedule.get(d.id);
+				
+				for (Delivery del : droneSchedule) {
+					int time = getTime(del,d);
+					d.time += time;
+					d.posX = in.orders[del.orderid].x;
+					d.posY = in.orders[del.orderid].x;
+					solved.droneSchedules.get(d.id).add(del);
+				}
 			}
 		}
 		return solved;
 	}
 	
-	static class Drone {
+	static class Drone implements Comparable<Drone> {
 		int id;
 		int posX;
 		int posY;
 		int time;
+		
+		
+		public Drone(Drone o) {
+			id = o.id;
+			posX = o.posX;
+			posY = o.posY;
+			time = o.time;
+		}
+		
 		public Drone(int id, int posX, int posY, int time) {
 			super();
 			this.id = id;
@@ -98,20 +164,10 @@ public class State {
 			this.posY = posY;
 			this.time = time;
 		}
-	}
-	
-	static class Pair implements Comparable<Pair>{
-		Drone drohne;
-		int time;
 		
-		Pair(Drone drohne, int time) {
-			this.drohne = drohne;
-			this.time = time;
-		}
-		
-		@Override
-		public int compareTo(Pair o) {
+		public int compareTo(Drone o) {
 			return time - o.time;
 		}
+
 	}
 }
