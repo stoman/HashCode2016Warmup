@@ -1,38 +1,51 @@
 package tumbleweed;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Input {
 	//TODO: add variables
 	public int data;
-	public Path source;
+	public Path src, dst, vis;
 	
-	public Input(Scanner s, Path p) {
-		source = p;
-		Path dst = p.toString().replace(".in", ".out");
+	public Input(Path p) throws IOException {
+	    src=p;
+	    dst=getPath(src.toString().replace(".in", ".out"));
+	    vis=getPath(src.toString().replace(".in", ".vis"));
+		Scanner sc = new Scanner(src);
 		//TODO: read input
 	}
 	
-	static LinkedList<Input> readAll(String folder) {
+	static LinkedList<Input> readAll() {
 		LinkedList<Path> files = new LinkedList<>();
-		Path path = FileSystems.getDefault().getPath(folder);
+		Path path = FileSystems.getDefault().getPath("data");
 		try {
 			listFiles(path, files);
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		LinkedList<Input> inputs = new LinkedList<>();
 		for (Path p : files) {
 			try {
-				inputs.add(new Input(new Scanner(p),p));
+				inputs.add(new Input(p));
 			} catch (IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		return inputs;
 	}
 
+	Path getPath(String file) {
+		return FileSystems.getDefault().getPath(file);
+	}
+	
 	static void listFiles(Path path, LinkedList<Path> files) throws IOException {
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
 			for (Path entry : stream) {
