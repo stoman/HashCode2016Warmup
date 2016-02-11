@@ -10,6 +10,7 @@ public class Delivery {
 	int numberOfProducts_save;
 	List<Integer> prodInd;
 	List<Integer> prodNum;
+	int load = 0;
 	
 	boolean done;
 
