@@ -29,7 +29,7 @@ public class State {
 		for (int i = 0; i < in.C; i++) {
 			int sum = 0;
 			for (int j = 0; j < in.c_l[i]; j++) {
-				sum += in.c_products[i][j];
+				sum += in.weights[in.c_products[i][j]];
 			}
 			sb.append(sum).append('\n');
 		}

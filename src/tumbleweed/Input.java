@@ -30,7 +30,7 @@ public class Input {
 	int c_x[]; // X-Pos of Orders
 	int c_y[]; // Y-Pos of Orders
 	int c_l[]; // c_l[c]: Number of ordered products for order c
-	int c_products[][]; // c_products[c][l]: Product Numer of the l-th product in the c-th order
+	int c_products[][]; // c_products[c][l]: Product Number of the l-th product in the c-th order
 
 	public int data;
 	public Path src, dst, vis, visfrq;
