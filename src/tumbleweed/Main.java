@@ -1,8 +1,10 @@
 package tumbleweed;
 
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        Input i = new Input(new Scanner(System.in));
+        
     }
 }
