@@ -49,7 +49,7 @@ public class State {
 		return sb.toString();
 	}
 	
-	static ArrayList<List<Delivery>> currentSchedule = null;
+	static ArrayList<List<Delivery>> currentSchedule;
 	
 	static int distTime(int x1, int y1, int x2, int y2) {
 		int dist0 = (x2 - x1)*(x2 - x1);
@@ -66,6 +66,10 @@ public class State {
 	}
 	
 	static int getTime(Input in, List<Delivery> deliveries, List<Drone> drones) {
+		currentSchedule = new ArrayList<>();
+		for (int i = 0; i < in.D; i++) {
+			currentSchedule.add(new LinkedList<>());
+		}
 		TreeSet<Drone> owndrones = new TreeSet<Drone>();
 		for (Drone d : drones) {
 			owndrones.add(new Drone(d));
@@ -139,6 +143,7 @@ public class State {
 					d.posY = in.orders[del.orderid].x;
 					solved.droneSchedules.get(d.id).add(del);
 				}
+				droneFinished.add(d);
 			}
 		}
 		return solved;
