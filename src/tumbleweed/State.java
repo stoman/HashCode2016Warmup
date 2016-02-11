@@ -26,15 +26,16 @@ public class State {
 		StringBuilder sb = new StringBuilder();
 		
 		for (int i = 0; i < in.C; i++) {
-			sb.append("\"(Order #" + i + ": " + in.c_l[i] + " products\" ");
-			sb.append(in.c_x[i]).append(" ").append(in.c_y[i]).append("\n");
+			sb.append("\"O" + i + "-" + in.c_l[i] + "\" ");
+			sb.append(in.c_x[i]).append(" ").append(in.c_y[i]).append(" ").append(0).append("\n");
 		}
 		for (int i = 0; i < in.W; i++) {
-			sb.append("\"Warehouse #").append(i).append("\" ");
-			sb.append(in.w_x[i]).append(" ").append(in.w_y[i]).append("\n");
+			sb.append("\"W").append(i).append("\" ");
+			sb.append(in.w_x[i]).append(" ").append(in.w_y[i]).append(" ").append(1).append("\n");
 		}
 		return sb.toString();
 	}
+	
 	
 	public String visualizeFreq() {
 		StringBuilder sb = new StringBuilder();
