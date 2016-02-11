@@ -83,7 +83,7 @@ public class State {
 		int time = 0;
 		time += distTime(drone.posX,drone.posY, in.w_x[d.warehouse],in.w_y[d.warehouse]);
 		time += distTime(in.w_x[d.warehouse],in.w_y[d.warehouse],in.orders[d.orderid].x,in.orders[d.orderid].y);
-		time += d.numberOfProducts();
+		time += 2*d.numberOfProducts();
 		return time;
 	}
 	
@@ -134,19 +134,21 @@ public class State {
 		TreeSet<Drone> droneFinished = new TreeSet<>();
 		for (int i=0; i < in.D; i++ ) {
 			//fixme 0tes warehouse
-			droneFinished.add(new Drone(i,0,0,0));
+			droneFinished.add(new Drone(i,0,in.w_x[0],in.w_y[0]));
 		}
 		
-		while (droneFinished.first().time < in.deadline) {
+		while (!deliveries.isEmpty() && droneFinished.first().time < in.deadline) {
 			List<Drone> freeDrones = new LinkedList<Drone>();
 			int best = Integer.MAX_VALUE;
 			List<List<Delivery>> bestSchedule = null;
+			List<Delivery> bestOrder = null;
 			for (Drone d : droneFinished) {
 				// try for every subset of the drohnes
 				freeDrones.add(d);
 				for (List<Delivery> order : deliveries) {
 					int timeForOrder = getTime(in,order, freeDrones);
 					if (timeForOrder < best) {
+						bestOrder = order;
 						bestSchedule = currentSchedule;
 						best = timeForOrder;
 					}
@@ -167,6 +169,7 @@ public class State {
 				}
 				droneFinished.add(d);
 			}
+			deliveries.remove(bestOrder);
 		}
 		return solved;
 	}
@@ -194,7 +197,19 @@ public class State {
 		}
 		
 		public int compareTo(Drone o) {
+			if (time == o.time){
+				return (id - o.id);
+			}
 			return time - o.time;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (!(obj instanceof Drone)) {
+				return false;
+			}
+			Drone o = (Drone)obj;
+			return o.id != id;
 		}
 
 	}
