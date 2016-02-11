@@ -148,7 +148,17 @@ public class Input {
 		for (int i = 0; i < orders.length; i++) {
 			sort.add(i);
 		}
-		Collections.shuffle(sort);
+		sort.sort(new Comparator<Integer>() {
+			public int compare(Integer o1, Integer o2) {
+				int dist0 = 0;
+				dist0 += (orders[o1].x - cols/2)*(orders[o1].x - cols/2);
+				dist0 += (orders[o1].y - rows/2)*(orders[o1].y - rows/2);
+				int dist1 = 0;
+				dist1 += (orders[o2].x - cols/2)*(orders[o2].x - cols/2);
+				dist1 += (orders[o2].y - rows/2)*(orders[o2].y - rows/2);
+				return dist1 - dist0;
+			}
+		});
 		
 		//copy stock array
 		int[][] stock = new int[w_stock.length][w_stock[0].length];
@@ -188,32 +198,29 @@ public class Input {
 			
 			for(int w: warehousesByDist) {
 				//check available goods
-				Delivery d = new Delivery(w, o);
-				int sumweights = 0;
-				
 				for (int i = 0; i < ps.length; i++) {
 					if(ps[i] != -1 && stock[w][ps[i]] > 0) {
-						//finish delivery?
-						if(sumweights + weights[ps[i]] > maxload) {
-							deliveriesOrder.add(d);
-							d = new Delivery(w, o);
-							sumweights = 0;
+						//choose first delivery
+						boolean done = false;
+						for(Delivery d: deliveriesOrder) {
+							if(!done && d.load + weights[ps[i]] <= maxload) {
+								done = true;
+								d.load += weights[ps[i]];
+								d.products.add(ps[i]);
+								break;
+							}
 						}
-						
-						//add product
-						sumweights += weights[ps[i]];
-						d.products.add(ps[i]);
+						if(!done) {
+							Delivery d = new Delivery(w, o);
+							d.load += weights[ps[i]];
+							d.products.add(ps[i]);
+							deliveriesOrder.add(d);
+						}
 						stock[w][ps[i]]--;
 						ps[i] = -1;
 					}
 				}
-				
-				//add last delivery
-				if(d.products.size() > 0) {
-					deliveriesOrder.add(d);
-				}
 			}
-			
 			r.set(o, deliveriesOrder);
 		}
 		
