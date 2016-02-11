@@ -1,19 +1,20 @@
 package tumbleweed;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
 
 public class State {
 	public Input in;
-	List<List<Delivery>> droneSchedules;
-	
-	//TODO: add variables
-	public int data;
+	ArrayList<List<Delivery>> droneSchedules = new ArrayList<>();
 	
 	public State(Input in) {
 		this.in = in;
 		//TODO: generate empty state
+		for (int i = 0; i < in.D; i++) {
+			droneSchedules.add(new LinkedList<>());
+		}
 	}
 	
 	public String toString() {
@@ -47,43 +48,50 @@ public class State {
 		return sb.toString();
 	}
 	
-	static void getTime(List<Delivery> d, Drohne[] drohnes) {
-		
+	static List<List<Delivery>> currentSchedule = null;
+	
+	static int getTime(List<Delivery> d, List<Drone> drohnes) {
+		return 0;
 	}
 	
 	public static State solve(Input in) {
+		State solved = new State(in);
 		List<List<Delivery>> deliveries = in.planDeliveries();
-		TreeSet<Pair> drohneFinished = new TreeSet<>();
+		TreeSet<Pair> droneFinished = new TreeSet<>();
 		for (int i=0; i < in.D; i++ ) {
-			drohneFinished.add(new Pair(new Drohne(i,0,0,0),0));
+			droneFinished.add(new Pair(new Drone(i,0,0,0),0));
 		}
 		
-		while (drohneFinished.first().time < in.deadline) {
-			List<Drohne> freeDrohnes = new LinkedList<Drohne>();
-			int time = drohneFinished.first().time;
-			for (Pair p : drohneFinished) {
-				if (p.time == time) {
-					freeDrohnes.add(p.drohne);
-				} else {
-					break;
-				}
+		while (droneFinished.first().time < in.deadline) {
+			List<Drone> freeDrones = new LinkedList<Drone>();
+			int best = Integer.MAX_VALUE;
+			List<List<Delivery>> bestSchedule = null;
+			for (Pair p : droneFinished) {
+				// try for every subset of the drohnes
+				freeDrones.add(p.drohne);
+				for (List<Delivery> order : deliveries) {
+					int timeForOrder = getTime(order, freeDrones);
+					if (timeForOrder < best) {
+						bestSchedule = currentSchedule;
+						best = timeForOrder;
+					}
+	 			}
 			}
-			for (List<Delivery> order : deliveries) {
-				
+			int i = 0;
+			for (List<Delivery> droneSchedule : bestSchedule) {
+				solved.droneSchedules.get(i).addAll(droneSchedule);
+				i++;
 			}
-			
 		}
-		
-		//TODO: solve me
-		return new State(in);
+		return solved;
 	}
 	
-	static class Drohne {
+	static class Drone {
 		int id;
 		int posX;
 		int posY;
 		int time;
-		public Drohne(int id, int posX, int posY, int time) {
+		public Drone(int id, int posX, int posY, int time) {
 			super();
 			this.id = id;
 			this.posX = posX;
@@ -93,10 +101,10 @@ public class State {
 	}
 	
 	static class Pair implements Comparable<Pair>{
-		Drohne drohne;
+		Drone drohne;
 		int time;
 		
-		Pair(Drohne drohne, int time) {
+		Pair(Drone drohne, int time) {
 			this.drohne = drohne;
 			this.time = time;
 		}
