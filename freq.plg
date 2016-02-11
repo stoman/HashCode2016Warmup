@@ -1,6 +1,13 @@
 # Normal
+set term pngcairo size 600,600 enhanced font 'Verdana,10'
+set output outputname
 set key top left
-set boxwidth 0.05
-plot datafile u 1 smooth freq w boxes
 
-Click here for minimal script to generate this plot
+binwidth = 0.1
+set boxwidth binwidth
+sum = 0
+
+s(x)          = ((sum=sum+1), 0)
+bin(x, width) = width*floor(x/width) + binwidth/2.0
+
+plot datafile u 1 smooth freq w boxes

@@ -20,8 +20,17 @@ public class State {
 	}
 	
 	public String visualize() {
-		//TODO: visualize 
-		return "visualization";
+		StringBuilder sb = new StringBuilder();
+		
+		for (int i = 0; i < in.C; i++) {
+			sb.append("\"(Order #" + i + ": " + in.c_l[i] + " products\" ");
+			sb.append(in.c_x[i]).append(" ").append(in.c_y[i]).append("\n");
+		}
+		for (int i = 0; i < in.W; i++) {
+			sb.append("\"Warehouse #").append(i).append("\" ");
+			sb.append(in.w_x[i]).append(" ").append(in.w_y[i]).append("\n");
+		}
+		return sb.toString();
 	}
 	
 	public String visualizeFreq() {
