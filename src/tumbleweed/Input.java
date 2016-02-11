@@ -1,5 +1,6 @@
 package tumbleweed;
 
+import java.nio.file.Path;
 import java.util.Scanner;
 
 public class Input {
@@ -9,6 +10,7 @@ public class Input {
 	
 	public Input(Scanner s, Path p) {
 		source = p;
+		Path dst = p.toString().replace(".in", ".out");
 		//TODO: read input
 	}
 	
