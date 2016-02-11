@@ -197,5 +197,8 @@ public class State {
 			return time - o.time;
 		}
 
+		public String toString() {
+			return "drone " + id + " at " + posX + "|" + posY + ", time: " + time;
+		}
 	}
 }
