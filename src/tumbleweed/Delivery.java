@@ -1,6 +1,8 @@
 package tumbleweed;
 
+import java.util.List;
+
 public class Delivery {
 	int warehouse, orderid;
-	int[] products;
+	List<Integer> products;
 }

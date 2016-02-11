@@ -5,6 +5,9 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -73,17 +76,25 @@ public class Input {
         
         // Fourth Section
         C = sc.nextInt();
+        orders = new Order[C];
         c_x = new int[C];
         c_y = new int[C];
         c_l = new int[C];
         c_products = new int[C][];
         for (int i = 0; i < C; ++i) {
-            c_x[i] = sc.nextInt();
-            c_y[i] = sc.nextInt();
-            c_l[i] = sc.nextInt();
-            c_products[i] = new int[c_l[i]];
-            for (int j = 0; j < c_l[i]; ++j)
-                c_products[i][j] = sc.nextInt();
+            orders[i] = new Order();
+            orders[i].x = sc.nextInt();
+            c_x[i] = orders[i].x;
+            orders[i].y = sc.nextInt();
+            c_y[i] = orders[i].y;
+            int l  = sc.nextInt();
+            c_l[i] = l;
+            c_products[i] = new int[l];
+            orders[i].products = new int[l];
+            for (int j = 0; j < l; ++j) {
+                orders[i].products[j] = sc.nextInt();
+                c_products[i][j] = orders[i].products[j];
+            }
         }
 	}
 	
@@ -126,7 +137,45 @@ public class Input {
 		}
 	}
 	
-	public List<Delivery> planDeliveries() {
-		return null;
+	public List<List<Delivery>> planDeliveries() {
+		List<List<Delivery>> r = new LinkedList<List<Delivery>>();
+		
+		//determine order to fulfill orders
+		ArrayList<Integer> sort = new ArrayList<Integer>();
+		for (int i = 0; i < orders.length; i++) {
+			sort.add(i);
+		}
+		Collections.shuffle(sort);
+		
+		//copy stock array
+		int[][] stock = new int[w_stock.length][w_stock[0].length];
+		for (int i = 0; i < stock.length; i++) {
+			for (int j = 0; j < stock[i].length; j++) {
+				stock[i][j] = w_stock[i][j];
+			}
+		}
+		
+		//fulfill each order step by step
+		for(int o: sort) {
+			
+			//order warehouses by dist
+			ArrayList<Integer> warehousesByDist = new ArrayList<Integer>();
+			for(int i = 0; i < W; i++) {
+				warehousesByDist.add(i);
+			}
+			warehousesByDist.sort(new Comparator<Integer>() {
+				public int compare(Integer arg0, Integer arg1) {
+					int dist0 = 0;
+					dist0 += (orders[o].x - w_x[arg0])*(orders[o].x - w_x[arg0]);
+					dist0 += (orders[o].y - w_y[arg0])*(orders[o].y - w_y[arg0]);
+					int dist1 = 0;
+					dist1 += (orders[o].x - w_x[arg1])*(orders[o].x - w_x[arg1]);
+					dist1 += (orders[o].y - w_y[arg1])*(orders[o].y - w_y[arg1]);
+					return dist0 - dist1;
+				}
+			});
+		}
+		
+		return r;
 	}
 }
