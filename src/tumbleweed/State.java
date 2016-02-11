@@ -1,10 +1,10 @@
 package tumbleweed;
 
 import java.util.List;
-import java.lang.StringBuilder;
 
 public class State {
 	public Input in;
+	List<List<Delivery>> droneSchedules;
 	
 	//TODO: add variables
 	public int data;
@@ -46,6 +46,7 @@ public class State {
 	}
 	
 	public static State solve(Input i) {
+		List<Delivery> deliveries = i.planDeliveries();
 		//TODO: solve me
 		return new State(i);
 	}

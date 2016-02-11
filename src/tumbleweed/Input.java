@@ -6,6 +6,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Input {
@@ -31,6 +32,9 @@ public class Input {
 	int c_y[]; // Y-Pos of Orders
 	int c_l[]; // c_l[c]: Number of ordered products for order c
 	int c_products[][]; // c_products[c][l]: Product Number of the l-th product in the c-th order
+	
+	//TODO: replace me
+	Order[] orders;
 
 	public int data;
 	public Path src, dst, vis, visfrq;
@@ -120,5 +124,9 @@ public class Input {
 				}
 			}
 		}
+	}
+	
+	public List<Delivery> planDeliveries() {
+		return null;
 	}
 }
