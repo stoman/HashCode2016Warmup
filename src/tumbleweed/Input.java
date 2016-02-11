@@ -5,6 +5,8 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -73,17 +75,25 @@ public class Input {
         
         // Fourth Section
         C = sc.nextInt();
+        orders = new Order[C];
         c_x = new int[C];
         c_y = new int[C];
         c_l = new int[C];
         c_products = new int[C][];
         for (int i = 0; i < C; ++i) {
-            c_x[i] = sc.nextInt();
-            c_y[i] = sc.nextInt();
-            c_l[i] = sc.nextInt();
-            c_products[i] = new int[c_l[i]];
-            for (int j = 0; j < c_l[i]; ++j)
-                c_products[i][j] = sc.nextInt();
+            orders[i] = new Order();
+            orders[i].x = sc.nextInt();
+            c_x[i] = orders[i].x;
+            orders[i].y = sc.nextInt();
+            c_y[i] = orders[i].y;
+            int l  = sc.nextInt();
+            c_l[i] = l;
+            c_products[i] = new int[l];
+            orders[i].products = new int[l];
+            for (int j = 0; j < l; ++j) {
+                orders[i].products[j] = sc.nextInt();
+                c_products[i][j] = orders[i].products[j];
+            }
         }
 	}
 	
@@ -126,7 +136,15 @@ public class Input {
 		}
 	}
 	
-	public List<Delivery> planDeliveries() {
-		return null;
+	public List<List<Delivery>> planDeliveries() {
+		List<Delivery> r = new LinkedList<Delivery>();
+		ArrayList<Integer> sort = new ArrayList<Integer>();
+		for (int i = 0; i < orders.length; i++) {
+			sort.add(i);
+		}
+		Collections.shuffle(sort);
+		int[][] stock = new int[w_stock.length][w_stock[0].length];
+		
+		return r;
 	}
 }
