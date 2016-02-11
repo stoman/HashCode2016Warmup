@@ -200,9 +200,10 @@ public class Input {
 				for (int i = 0; i < ps.length; i++) {
 					if(ps[i] != -1 && stock[w][ps[i]] > 0) {
 						//choose first delivery
+						
 						boolean done = false;
 						for(Delivery d: deliveriesOrder) {
-							if(!done && d.load + weights[ps[i]] <= maxload) {
+							if(!done && d.load + weights[ps[i]] <= maxload && d.warehouse == w) {
 								done = true;
 								d.load += weights[ps[i]];
 								d.products.add(ps[i]);
