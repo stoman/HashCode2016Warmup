@@ -8,7 +8,7 @@ import java.nio.file.Path;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        for(Input i: Input.readAll("data/official")) {
+        for(Input i: Input.readAll("data/sample")) {
             
             
             

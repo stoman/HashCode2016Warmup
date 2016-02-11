@@ -26,8 +26,9 @@ public class State {
 			for (int i = 0; i < droneSchedules.get(d).size(); ++i) {
 				for (int p = 0; p < in.P; ++p)
 					prod_nums[p] = 0;
-				for (int j = 0; j < droneSchedules.get(d).get(i).products.size(); ++j) {
+				for (int j = 0; j < droneSchedules.get(d).get(i).products.size(); ++j) 
 					prod_nums[droneSchedules.get(d).get(i).products.get(j)]++;
+				
 				for (int p = 0; p < in.P; ++p)
 					if (prod_nums[p] > 0) {
 						result.append(d + " L " + droneSchedules.get(d).get(i).warehouse + " " + p + " " + prod_nums[p] + "\n");
@@ -38,8 +39,8 @@ public class State {
 						result.append(d + " D " + droneSchedules.get(d).get(i).orderid + " " + p + " " + prod_nums[p] + "\n");
 						Q++;
 					}
-				}
 			}
+			
 		}
 		return Q + "\n" + result.toString();
 	}
