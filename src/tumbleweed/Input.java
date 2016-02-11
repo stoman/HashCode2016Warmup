@@ -1,23 +1,31 @@
 package tumbleweed;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Input {
 	//TODO: add variables
 	public int data;
-	public Path source;
+	public Path src, dst, vis;
 	
 	public Input(Scanner s, Path p) {
-		source = p;
+	    this.src=p;
+	    
 		//TODO: read input
 	}
 	
-	static LinkedList<Input> readAll(String folder) {
+	static LinkedList<Input> readAll() {
 		LinkedList<Path> files = new LinkedList<>();
-		Path path = FileSystems.getDefault().getPath(folder);
+		Path path = FileSystems.getDefault().getPath("data");
 		try {
 			listFiles(path, files);
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		LinkedList<Input> inputs = new LinkedList<>();
