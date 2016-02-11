@@ -138,7 +138,10 @@ public class Input {
 	}
 	
 	public List<List<Delivery>> planDeliveries() {
-		List<List<Delivery>> r = new LinkedList<List<Delivery>>();
+		List<List<Delivery>> r = new ArrayList<List<Delivery>>();
+		for (int i = 0; i < orders.length; i++) {
+			r.add(null);
+		}
 		
 		//determine order to fulfill orders
 		ArrayList<Integer> sort = new ArrayList<Integer>();
@@ -157,6 +160,8 @@ public class Input {
 		
 		//fulfill each order step by step
 		for(int o: sort) {
+			System.out.println(o);
+			List<Delivery> deliveriesOrder = new LinkedList<Delivery>();
 			
 			//order warehouses by dist
 			ArrayList<Integer> warehousesByDist = new ArrayList<Integer>();
@@ -174,6 +179,42 @@ public class Input {
 					return dist0 - dist1;
 				}
 			});
+			
+			//copy products contained in this order
+			int[] ps = new int[orders[o].products.length];
+			for (int i = 0; i < ps.length; i++) {
+				ps[i] = orders[o].products[i];
+			}
+			
+			for(int w: warehousesByDist) {
+				//check available goods
+				Delivery d = new Delivery(w, o);
+				int sumweights = 0;
+				
+				for (int i = 0; i < ps.length; i++) {
+					if(ps[i] != -1 && stock[w][ps[i]] > 0) {
+						//finish delivery?
+						if(sumweights + weights[ps[i]] > maxload) {
+							deliveriesOrder.add(d);
+							d = new Delivery(w, o);
+							sumweights = 0;
+						}
+						
+						//add product
+						sumweights += weights[ps[i]];
+						d.products.add(ps[i]);
+						stock[w][ps[i]]--;
+						ps[i] = -1;
+					}
+				}
+				
+				//add last delivery
+				if(d.products.size() > 0) {
+					deliveriesOrder.add(d);
+				}
+			}
+			
+			r.set(o, deliveriesOrder);
 		}
 		
 		return r;
