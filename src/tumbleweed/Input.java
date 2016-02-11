@@ -52,7 +52,7 @@ public class Input {
 				if (Files.isDirectory(entry)) {
 					listFiles(entry, files);
 				} else {
-					if (entry.endsWith(".in")) {
+					if (entry.toString().endsWith(".in")) {
 						files.add(entry);
 					}
 				}
