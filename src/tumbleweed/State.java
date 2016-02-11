@@ -1,15 +1,16 @@
 package tumbleweed;
 
 import java.util.List;
+import java.lang.StringBuilder;
 
 public class State {
-	public Input i;
+	public Input in;
 	
 	//TODO: add variables
 	public int data;
 	
-	public State(Input i) {
-		this.i = i;
+	public State(Input in) {
+		this.in = in;
 		//TODO: generate empty state
 	}
 	
@@ -21,6 +22,18 @@ public class State {
 	public String visualize() {
 		//TODO: visualize 
 		return "visualization";
+	}
+	
+	public String visualizeFreq() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < in.C; i++) {
+			int sum = 0;
+			for (int j = 0; j < in.c_l[i]; j++) {
+				sum += in.c_products[i][j];
+			}
+			sb.append(sum).append('\n');
+		}
+		return sb.toString();
 	}
 	
 	public static State solve(Input i) {

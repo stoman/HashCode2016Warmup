@@ -9,8 +9,12 @@ import java.nio.file.Path;
 public class Main {
     public static void main(String[] args) throws IOException {
         for(Input i: Input.readAll("data")) {
+            
+            
+            
             State s = State.solve(i);
             writeToFile(s.toString(), i.dst);
+            writeToFile(s.visualizeFreq(), i.visfrq);
             writeToFile(s.visualize(), i.vis);
         }
     }

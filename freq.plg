@@ -1,0 +1,6 @@
+# Normal
+set key top left
+set boxwidth 0.05
+plot datafile u 1 smooth freq w boxes
+
+Click here for minimal script to generate this plot
