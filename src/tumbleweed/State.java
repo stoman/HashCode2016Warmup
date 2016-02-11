@@ -80,7 +80,7 @@ public class State {
 				if (del.done){
 					continue;
 				}
-				int time = getTime(del,d);
+				int time = getTime(in,del,d);
 				if (time < best) {
 					best = time;
 					bestDel = del;
@@ -133,7 +133,7 @@ public class State {
 				List<Delivery> droneSchedule = bestSchedule.get(d.id);
 				
 				for (Delivery del : droneSchedule) {
-					int time = getTime(del,d);
+					int time = getTime(in,del,d);
 					d.time += time;
 					d.posX = in.orders[del.orderid].x;
 					d.posY = in.orders[del.orderid].x;
