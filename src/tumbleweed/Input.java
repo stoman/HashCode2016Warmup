@@ -5,24 +5,25 @@ import java.util.Scanner;
 public class Input {
 	//TODO: add variables
 	public int data;
+	public Path source;
 	
-	public Input(Scanner s) {
+	public Input(Scanner s, Path p) {
+		source = p;
 		//TODO: read input
 	}
 	
-	static LinkedList<Input> readAll() {
+	static LinkedList<Input> readAll(String folder) {
 		LinkedList<Path> files = new LinkedList<>();
-		Path path = FileSystems.getDefault().getPath("data");
+		Path path = FileSystems.getDefault().getPath(folder);
 		try {
 			listFiles(path, files);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		LinkedList<Input> inputs = new LinkedList<>();
 		for (Path p : files) {
 			try {
-				inputs.add(new Input(new Scanner(p)));
+				inputs.add(new Input(new Scanner(p),p));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
