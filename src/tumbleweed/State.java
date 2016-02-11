@@ -61,7 +61,7 @@ public class State {
 		int time = 0;
 		time += distTime(drone.posX,drone.posY, in.w_x[d.warehouse],in.w_y[d.warehouse]);
 		time += distTime(in.w_x[d.warehouse],in.w_y[d.warehouse],in.orders[d.orderid].x,in.orders[d.orderid].y);
-		time += d.numberOfProducts;
+		time += d.numberOfProducts();
 		return time;
 	}
 	
