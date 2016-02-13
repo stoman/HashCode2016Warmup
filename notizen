@@ -1,0 +1,39 @@
+Dumme Lösungen
+-nur linien
+-suche nach großen Quadraten (präfixsumme), möglicher partiell
+
+Erweiterung von partiellen Lösungen
+-greedy?
+-quadranten einzeln lösen, möglichst perfekt
+-quadrantenlösungen mergen
+
+Mergen von partiellen Lösungen
+-aus quadranten und aus der primitiven Quadratlösungen
+
+Mit fertiger Lösung:
+-Überflüssige Linien erkennen
+
+für einen quadratischen Bereich:
+Ist hier ein Quadrat sinnvoll?
+
+für einen Quadranten: (diesen dann verschieben)
+alles was in diesem quadranten ist löschen und besser machen
+
+
+
+1) quadrate reinlegen (mehrere lösungen), Lösung ist partiell
+2) Einen quadranten lösen, fixieren. Dann zum nächsten Quadranten, hier
+die Lösung vom ersten mitnehmen
+
+Möglichkeiten
+1) mit welchem quadranten fange ich an
+2) wie greede ich? oben links, unten rechts, etc
+
+immer X lösungen, die beste nach verschiedenen metriken. dann den nächsten 
+Quadranten und wieder auf X reduzieren
+
+
+output:
+-cloneable
+-bild-status (boolean array)
+-wenn quadrat hinzugefügt wird alle "löcher" löschen, die Löschungen als letztes ausgeben
